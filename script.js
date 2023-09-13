@@ -1,176 +1,123 @@
-// Calculator screen
+//Calculator screen
 const currentScreen = document.getElementById("current-screen");
 const lastScreen = document.getElementById("last-screen");
-
 const numbers = document.querySelectorAll(".number");
-let firstNumber = "";
-let secondNumber = "";
-let operator = "";
-let isFirstDigit = true;
-let isOperatorPressed = false;
+const operators = document.querySelectorAll(".operator");
+const clearButton = document.getElementById("clear");
+const deleteButton = document.getElementById("delete");
+const percentageButton = document.getElementById("percentage");
+const dotButton = document.getElementById("dot");
+const equalButton = document.getElementById("equal");
+
+let expression = [];
 let isEqualPressed = false;
+
+function updateScreen() {
+    currentScreen.textContent = expression.join(" ");
+}
 
 numbers.forEach(element => {
     element.addEventListener("click", () => {
         if (isEqualPressed) {
-            resetCalculator();
+            expression = [];
+            isEqualPressed = false;
         }
-
-        if (!isFirstDigit) {
-            secondNumber += element.textContent;
-        } else {
-            firstNumber += element.textContent;
-        }
-
-        currentScreen.textContent += element.textContent;
+        expression.push(element.textContent);
+        updateScreen();
     });
 });
-
-// Operator
-const operators = document.querySelectorAll(".operator");
 
 operators.forEach(op => {
     op.addEventListener("click", () => {
-        if (!isOperatorPressed) {
-            if (isFirstDigit && secondNumber !== "") {
-                // Calculate and display result
-                performCalculation();
-                // Set the operator for the next operation
-                firstNumber = currentScreen.textContent;
-                secondNumber = "";
-                currentScreen.textContent += " " + op.textContent + " ";
-            } else {
-                operator = op.textContent;
-                currentScreen.textContent += " " + operator + " ";
-                isFirstDigit = false;
-                isOperatorPressed = true;
-                isEqualPressed = false;
-            }
+        if (!isEqualPressed) {
+            expression.push(op.textContent);
+            updateScreen();
         }
     });
 });
 
-// Calculate
-// Calculate
-function performCalculation() {
-    const num1 = parseFloat(firstNumber);
-    const num2 = parseFloat(secondNumber);
+clearButton.addEventListener("click", () => {
+    expression = [];
+    updateScreen();
+});
 
-    let result;
-
-    switch (operator) {
-        case "+":
-            result = num1 + num2;
-            break;
-        case "-":
-            result = num1 - num2;
-            break;
-        case "x":
-            result = num1 * num2;
-            break;
-        case "÷":
-            if (num2 === 0) {
-                resetCalculator();
-                currentScreen.textContent = "Error";
-                return;
-            } else {
-                result = num1 / num2;
-            }
-            break;
-        default:
-            break;
+deleteButton.addEventListener("click", () => {
+    if (!isEqualPressed) {
+        expression.pop();
+        updateScreen();
     }
+});
 
-    lastScreen.textContent = firstNumber + " " + operator + " " + secondNumber + " =";
-    currentScreen.textContent = result.toString();
-    firstNumber = result.toString();
-    secondNumber = "";
-    isFirstDigit = false;
-    isOperatorPressed = false;
-}
-
-
-// Equal and display result
-const equal = document.getElementById("equal");
-
-equal.addEventListener("click", () => {
-    if (!isEqualPressed && isOperatorPressed && secondNumber !== "") {
-        performCalculation();
+equalButton.addEventListener("click", () => {
+    if (!isEqualPressed && expression.length >= 3) {
+        let result = calculate(expression);
+        lastScreen.textContent = expression.join(" ") + " =";
+        currentScreen.textContent = result;
+        expression = [result];
         isEqualPressed = true;
     }
 });
 
-// Clear
-const clearButton = document.getElementById("clear");
-
-clearButton.addEventListener("click", () => {
-    resetCalculator();
-});
-
-function resetCalculator() {
-    firstNumber = "";
-    secondNumber = "";
-    operator = "";
-    currentScreen.textContent = "";
-    lastScreen.textContent = "";
-    isFirstDigit = true;
-    isOperatorPressed = false;
-    isEqualPressed = false;
-}
-
-
-// Delete
-const deleteButton = document.getElementById("delete");
-
-deleteButton.addEventListener("click", () => {
-    if (!isEqualPressed) {
-        currentScreen.textContent = currentScreen.textContent.slice(0, -1);
-        const lastChar = currentScreen.textContent.slice(-1);
-
-        if (currentScreen.textContent === "") {
-            resetCalculator();
-        } else if (isNaN(lastChar) || lastChar === ".") {
-            operator = "";
-            isFirstDigit = false;
-            isOperatorPressed = false;
-        }
-    }
-});
-
-// Percentage
-const percentageButton = document.getElementById("percentage");
-
 percentageButton.addEventListener("click", () => {
-    if (!isEqualPressed && currentScreen.textContent !== "") {
-        const expression = currentScreen.textContent.split(" ");
-        if (expression.length === 3) {
-            const num1 = parseFloat(expression[0]);
-            const num2 = parseFloat(expression[2]);
-            const calculatedResult = (num1 * num2) / 100;
-            lastScreen.textContent = currentScreen.textContent + " =";
-            currentScreen.textContent = calculatedResult.toString();
-            isFirstDigit = false;
-            isOperatorPressed = false;
-            isEqualPressed = true;
-        }
+    if (!isEqualPressed && expression.length > 0) {
+        const lastElement = expression.pop();
+        const num = parseFloat(lastElement);
+        const calculatedResult = num / 100;
+        expression.push(calculatedResult.toString());
+        updateScreen();
     }
 });
-
-// Dot
-const dotButton = document.getElementById("dot");
 
 dotButton.addEventListener("click", () => {
     if (!isEqualPressed) {
-        if (!isFirstDigit) {
-            if (secondNumber.indexOf(".") === -1) {
-                secondNumber += ".";
-                currentScreen.textContent += ".";
-            }
-        } else {
-            if (firstNumber.indexOf(".") === -1) {
-                firstNumber += ".";
-                currentScreen.textContent += ".";
-            }
+        const lastElement = expression[expression.length - 1];
+        if (!lastElement.includes(".") && !lastElement.includes(" ")) {
+            expression[expression.length - 1] += ".";
+            updateScreen();
         }
+    }
+});
+
+function calculate(expressionArray) {
+    let result = parseFloat(expressionArray[0]);
+    for (let i = 1; i < expressionArray.length; i += 2) {
+        const operator = expressionArray[i];
+        const num = parseFloat(expressionArray[i + 1]);
+        switch (operator) {
+            case "+":
+                result += num;
+                break;
+            case "-":
+                result -= num;
+                break;
+            case "x":
+                result *= num;
+                break;
+            case "÷":
+                if (num !== 0) {
+                    result /= num;
+                } else {
+                    return "Error";
+                }
+                break;
+            default:
+                break;
+        }
+    }
+    return result.toString();
+}
+
+//Percentage Button (Updated)
+percentageButton.addEventListener("click", () => {
+    if (!isEqualPressed && expression.length > 0) {
+        const lastElement = expression.pop();
+        if (lastElement.includes(" ")) {
+            //If the last element is an operator, push it back and add the percentage
+            expression.push(lastElement);
+        }
+        const num = parseFloat(lastElement);
+        const calculatedResult = num / 100;
+        expression.push(calculatedResult.toString());
+        updateScreen();
     }
 });
