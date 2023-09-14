@@ -121,3 +121,30 @@ percentageButton.addEventListener("click", () => {
         updateScreen();
     }
 });
+
+// Keyboard Support
+document.addEventListener("keydown", (event) => {
+    const key = event.key;
+
+    if (key >= "0" && key <= "9") {
+        numbers.forEach((element) => {
+            if (element.textContent === key) {
+                element.click();
+            }
+        });
+    } else if (key === "+" || key === "-" || key === "*" || key === "/") {
+        operators.forEach((op) => {
+            if (op.textContent === key) {
+                op.click();
+            }
+        });
+    } else if (key === "." || key === ",") {
+        dotButton.click();
+    } else if (key === "Enter" || key === "=") {
+        equalButton.click();
+    } else if (key === "Escape") {
+        clearButton.click();
+    } else if (key === "Backspace") {
+        deleteButton.click();
+    }
+});
