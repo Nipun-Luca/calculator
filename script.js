@@ -17,7 +17,7 @@ let isOperatorPressed = false;
 function updateScreen() {
     let screenContent = "";
     if (!(operatorIndex === null)) {
-        // Add spaces around the operator
+        //Add spaces around the operator
         expression.forEach((element, index) => {
             if (index === operatorIndex) {
                 screenContent += " " + element + " ";
@@ -26,7 +26,7 @@ function updateScreen() {
             }
         });
     } else {
-        // No operator, just join with spaces
+        //No operator, just join with spaces
         screenContent = expression.join('');
     }
 
@@ -58,7 +58,10 @@ operators.forEach(op => {
 
 clearButton.addEventListener("click", () => {
     expression = [];
-    updateScreen();
+    currentScreen.textContent = "";
+    lastScreen.textContent = "";
+    operatorIndex = null;
+    isOperatorPressed = false;
 });
 
 deleteButton.addEventListener("click", () => {
@@ -78,6 +81,7 @@ equalButton.addEventListener("click", () => {
         lastScreen.textContent = currentScreen.textContent + " =";
         currentScreen.textContent = result;
         expression = [result];
+        operatorIndex = null;
         isEqualPressed = true;
         isOperatorPressed = false;
     }
@@ -120,7 +124,7 @@ function calculate(expressionArray) {
             result = firstNumber * secondNumber;
             break;
         case "÷":
-            if (num !== 0) {
+            if (secondNumber !== 0) {
                 result = firstNumber / secondNumber;
             } else {
                 return "Error";
@@ -133,7 +137,7 @@ function calculate(expressionArray) {
     return result.toString();
 }
 
-//Percentage Button (Updated)
+//Percentage Button
 percentageButton.addEventListener("click", () => {
     if (!isEqualPressed && expression.length > 0) {
         const lastElement = expression.pop();
@@ -148,7 +152,7 @@ percentageButton.addEventListener("click", () => {
     }
 });
 
-// Keyboard Support
+//Keyboard Support
 document.addEventListener("keydown", (event) => {
     const key = event.key;
 
