@@ -10,11 +10,29 @@ const dotButton = document.getElementById("dot");
 const equalButton = document.getElementById("equal");
 
 let expression = [];
+let operatorIndex = null;
 let isEqualPressed = false;
+let isOperatorPressed = false;
 
 function updateScreen() {
-    currentScreen.textContent = expression.join(" ");
+    let screenContent = "";
+    if (!(operatorIndex === null)) {
+        // Add spaces around the operator
+        expression.forEach((element, index) => {
+            if (index === operatorIndex) {
+                screenContent += " " + element + " ";
+            } else {
+                screenContent += element;
+            }
+        });
+    } else {
+        // No operator, just join with spaces
+        screenContent = expression.join('');
+    }
+
+    currentScreen.textContent = screenContent;
 }
+
 
 numbers.forEach(element => {
     element.addEventListener("click", () => {
@@ -29,8 +47,10 @@ numbers.forEach(element => {
 
 operators.forEach(op => {
     op.addEventListener("click", () => {
-        if (!isEqualPressed) {
+        if (!isEqualPressed && !isOperatorPressed) {
             expression.push(op.textContent);
+            operatorIndex = expression.length - 1;
+            isOperatorPressed = true;
             updateScreen();
         }
     });
@@ -44,6 +64,10 @@ clearButton.addEventListener("click", () => {
 deleteButton.addEventListener("click", () => {
     if (!isEqualPressed) {
         expression.pop();
+        if(expression.length === operatorIndex) {
+            operatorIndex = null;
+            isOperatorPressed = false;
+        }
         updateScreen();
     }
 });
@@ -51,10 +75,11 @@ deleteButton.addEventListener("click", () => {
 equalButton.addEventListener("click", () => {
     if (!isEqualPressed && expression.length >= 3) {
         let result = calculate(expression);
-        lastScreen.textContent = expression.join(" ") + " =";
+        lastScreen.textContent = currentScreen.textContent + " =";
         currentScreen.textContent = result;
         expression = [result];
         isEqualPressed = true;
+        isOperatorPressed = false;
     }
 });
 
@@ -79,31 +104,32 @@ dotButton.addEventListener("click", () => {
 });
 
 function calculate(expressionArray) {
-    let result = parseFloat(expressionArray[0]);
-    for (let i = 1; i < expressionArray.length; i += 2) {
-        const operator = expressionArray[i];
-        const num = parseFloat(expressionArray[i + 1]);
-        switch (operator) {
-            case "+":
-                result += num;
-                break;
-            case "-":
-                result -= num;
-                break;
-            case "x":
-                result *= num;
-                break;
-            case "÷":
-                if (num !== 0) {
-                    result /= num;
-                } else {
-                    return "Error";
-                }
-                break;
-            default:
-                break;
-        }
+    let result = 0;
+    const operator = expressionArray[operatorIndex];
+    const firstNumber = parseFloat(expressionArray.slice(0, operatorIndex).join(''));
+    const secondNumber = parseFloat(expressionArray.slice(operatorIndex + 1).join(''));
+    console.log(firstNumber,secondNumber)
+    switch (operator) {
+        case "+":
+            result = firstNumber + secondNumber;
+            break;
+        case "-":
+            result = firstNumber - secondNumber;
+            break;
+        case "x":
+            result = firstNumber * secondNumber;
+            break;
+        case "÷":
+            if (num !== 0) {
+                result = firstNumber / secondNumber;
+            } else {
+                return "Error";
+            }
+            break;
+        default:
+            break;
     }
+
     return result.toString();
 }
 
