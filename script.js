@@ -14,6 +14,7 @@ let operatorIndex = null;
 let isEqualPressed = false;
 let isOperatorPressed = false;
 
+
 function updateScreen() {
     let screenContent = "";
     if (!(operatorIndex === null)) {
@@ -37,7 +38,6 @@ function updateScreen() {
 numbers.forEach(element => {
     element.addEventListener("click", () => {
         if (isEqualPressed) {
-            expression = [];
             isEqualPressed = false;
         }
         expression.push(element.textContent);
@@ -76,16 +76,16 @@ deleteButton.addEventListener("click", () => {
 });
 
 equalButton.addEventListener("click", () => {
-    if (!isEqualPressed && expression.length >= 3) {
+    if (!isEqualPressed && expression.length >= 3 && operatorIndex !== null && expression.length - 1 > operatorIndex ) {
         let result = calculate(expression);
         lastScreen.textContent = currentScreen.textContent + " =";
         currentScreen.textContent = result;
-        expression = [result];
+        expression = result.split('');
         operatorIndex = null;
-        isEqualPressed = true;
         isOperatorPressed = false;
     }
 });
+
 
 percentageButton.addEventListener("click", () => {
     if (!isEqualPressed && expression.length > 0) {
