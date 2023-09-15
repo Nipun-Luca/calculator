@@ -47,7 +47,7 @@ numbers.forEach(element => {
 
 operators.forEach(op => {
     op.addEventListener("click", () => {
-        if (!isEqualPressed && !isOperatorPressed) {
+        if (!isEqualPressed && !isOperatorPressed && expression.length !== 0) {
             expression.push(op.textContent);
             operatorIndex = expression.length - 1;
             isOperatorPressed = true;
@@ -80,7 +80,14 @@ equalButton.addEventListener("click", () => {
         let result = calculate(expression);
         lastScreen.textContent = currentScreen.textContent + " =";
         currentScreen.textContent = result;
-        expression = result.split('');
+
+        if(!(result == "Error")) {
+            expression = result.split('');
+            operatorIndex = null;
+            isOperatorPressed = false;
+        } else {
+            expression = [];
+        }
         operatorIndex = null;
         isOperatorPressed = false;
     }
@@ -112,7 +119,6 @@ function calculate(expressionArray) {
     const operator = expressionArray[operatorIndex];
     const firstNumber = parseFloat(expressionArray.slice(0, operatorIndex).join(''));
     const secondNumber = parseFloat(expressionArray.slice(operatorIndex + 1).join(''));
-    console.log(firstNumber,secondNumber)
     switch (operator) {
         case "+":
             result = firstNumber + secondNumber;

@@ -68,17 +68,19 @@ button {
 .number {
     background-color: rgb(31, 31, 31);
     color: aliceblue;
-    font-size:medium;
+    font-size: medium;
 }
 
-.operator {
+.operator, #equal, #dot, #percentage {
     background-color: rgb(255, 133, 89);
     color: black;
+    font-size: medium;
 }
 
 .button {
     background-color: rgb(165, 214, 91);
     color: black;
+    font-size: small;
 }
 
 
