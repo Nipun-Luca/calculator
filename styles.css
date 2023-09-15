@@ -10,7 +10,7 @@ body {
 }
 
 #calculator {
-    border: 1px solid black;
+    border: 2px solid black;
     width: 300px;
     height: 400px;
     display: flex;
@@ -25,8 +25,10 @@ body {
   
 }
 
+
+/* Display on the calculator */
 #calculator-display {
-    border: 1px solid black;
+    border: 2px solid black;
     width: 270px;
     height: 80px;
     background-color: aliceblue;
@@ -43,6 +45,7 @@ body {
 }
 
 
+/* Button layout */
 .row {
     display: flex;
     justify-content: space-between;
@@ -60,8 +63,29 @@ button {
     margin-top: 5px;
 }
 
+
+/* Colors for buttons */
+.number {
+    background-color: rgb(31, 31, 31);
+    color: aliceblue;
+    font-size:medium;
+}
+
+.operator {
+    background-color: rgb(255, 133, 89);
+    color: black;
+}
+
+.button {
+    background-color: rgb(165, 214, 91);
+    color: black;
+}
+
+
+/* Footer */
 footer {
     height: 50px;
+    min-height: 50px;
     width: 100%;
     display: flex;
     justify-content: center;
