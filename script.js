@@ -121,15 +121,26 @@ function equal() {
 //Percentage Button
 percentageButton.addEventListener("click", () => {
     if (!isEqualPressed && expression.length > 0 && expression.length - 1 !== operatorIndex) {
-        const lastElement = expression.pop();
-        if (lastElement.includes(" ")) {
-            //If the last element is an operator, push it back and add the percentage
-            expression.push(lastElement);
+        if (expression.length - 1 < operatorIndex || operatorIndex === null) { //first number, before the operation sign
+            const storeNumber = expression.slice(0);
+            expression = []; //only first number present at this point so clear all
+
+            const num = parseFloat(storeNumber.join(""));
+            const calculatedResult = num / 100;
+
+            expression = calculatedResult.toString().split("");
+            updateScreen();
+        } else { //second number, after the operation sign
+            const storeNumber = expression.slice(operatorIndex + 1);
+            expression.splice(operatorIndex + 1, (expression.length - 1) - operatorIndex);
+
+            const num = parseFloat(storeNumber.join(""))
+            const calculatedResult = num / 100;
+
+            let tempExpression = calculatedResult.toString().split("");
+            expression = expression.concat(tempExpression);
+            updateScreen();
         }
-        const num = parseFloat(lastElement);
-        const calculatedResult = num / 100;
-        expression.push(calculatedResult.toString());
-        updateScreen();
     }
 });
 
