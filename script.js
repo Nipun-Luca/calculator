@@ -126,7 +126,7 @@ percentageButton.addEventListener("click", () => {
             expression = []; //only first number present at this point so clear all
 
             const num = parseFloat(storeNumber.join(""));
-            const calculatedResult = num / 100;
+            const calculatedResult = Number((num / 100).toPrecision(4));
 
             //Check if it contains a dot
             if (typeof calculatedResult === 'number' && !Number.isNaN(calculatedResult) && calculatedResult % 1 !== 0) {
@@ -143,7 +143,7 @@ percentageButton.addEventListener("click", () => {
             expression.splice(operatorIndex + 1, (expression.length - 1) - operatorIndex);
 
             const num = parseFloat(storeNumber.join(""))
-            const calculatedResult = num / 100;
+            const calculatedResult = Number((num / 100).toPrecision(4));
 
             //Check if it contains a dot
             if (typeof calculatedResult === 'number' && !Number.isNaN(calculatedResult) && calculatedResult % 1 !== 0) {
