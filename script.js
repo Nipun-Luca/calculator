@@ -13,6 +13,7 @@ let expression = [];
 let operatorIndex = null;
 let isEqualPressed = false;
 let isOperatorPressed = false;
+let isDotPressed = false;
 
 //Display
 function updateScreen() {
@@ -54,6 +55,7 @@ operators.forEach(op => {
             expression.push(op.textContent);
             operatorIndex = expression.length - 1;
             isOperatorPressed = true;
+            isDotPressed = false;
             updateScreen();
         } else if (expression.length - 1 > operatorIndex) {
             equal();  //Carry out calculation of current expression if user clicks an operator button again
@@ -73,16 +75,20 @@ clearButton.addEventListener("click", () => {
     lastScreen.textContent = "";
     operatorIndex = null;
     isOperatorPressed = false;
+    isDotPressed = false;
 });
 
 
 //Delete button
 deleteButton.addEventListener("click", () => {
     if (!isEqualPressed) {
-        expression.pop();
+        let removed = expression.pop();
         if(expression.length === operatorIndex) {
             operatorIndex = null;
             isOperatorPressed = false;
+            isDotPressed = true;
+        } else if (removed == ".") {
+            isDotPressed = false;
         }
         updateScreen();
     }
@@ -107,6 +113,7 @@ function equal() {
         }
         operatorIndex = null;
         isOperatorPressed = false;
+        isDotPressed = false;
     }
 }
 
@@ -131,8 +138,9 @@ percentageButton.addEventListener("click", () => {
 dotButton.addEventListener("click", () => {
     if (!isEqualPressed) {
         const lastElement = expression[expression.length - 1];
-        if (!lastElement.includes(".") && !lastElement.includes(" ")) {
-            expression[expression.length - 1] += ".";
+        if (!isDotPressed && !lastElement.includes(" ") && expression.length - 1 !== operatorIndex) {
+            expression.push(".");
+            isDotPressed = true;
             updateScreen();
         }
     }
