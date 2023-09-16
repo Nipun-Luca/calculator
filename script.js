@@ -128,8 +128,16 @@ percentageButton.addEventListener("click", () => {
             const num = parseFloat(storeNumber.join(""));
             const calculatedResult = num / 100;
 
+            //Check if it contains a dot
+            if (typeof calculatedResult === 'number' && !Number.isNaN(calculatedResult) && calculatedResult % 1 !== 0) {
+                isDotPressed = true;
+            }
+            
+            //Display update
             expression = calculatedResult.toString().split("");
             updateScreen();
+
+
         } else { //second number, after the operation sign
             const storeNumber = expression.slice(operatorIndex + 1);
             expression.splice(operatorIndex + 1, (expression.length - 1) - operatorIndex);
@@ -137,6 +145,12 @@ percentageButton.addEventListener("click", () => {
             const num = parseFloat(storeNumber.join(""))
             const calculatedResult = num / 100;
 
+            //Check if it contains a dot
+            if (typeof calculatedResult === 'number' && !Number.isNaN(calculatedResult) && calculatedResult % 1 !== 0) {
+                isDotPressed = true;
+            }
+
+            //Display update
             let tempExpression = calculatedResult.toString().split("");
             expression = expression.concat(tempExpression);
             updateScreen();
